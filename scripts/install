@@ -63,6 +63,42 @@ if [ -d $PKG_DIR/init.network ]; then
   cp $PKG_DIR/init.network/* $INSTALL/etc/init.d/network/
 fi
 
+if [ -d $PKG_DIR/tmpfiles.d ]; then
+  mkdir -p $INSTALL/etc/tmpfiles.d
+  cp $PKG_DIR/tmpfiles.d/*.conf $INSTALL/etc/tmpfiles.d
+fi
+
+if [ -d $PKG_DIR/modules-load.d ]; then
+  mkdir -p $INSTALL/etc/modules-load.d
+  cp $PKG_DIR/modules-load.d/*.conf $INSTALL/etc/modules-load.d
+fi
+
+if [ -d $PKG_DIR/systemd.d ]; then
+  for FILE in `ls $PKG_DIR/systemd.d`; do
+    cp $PKG_DIR/systemd.d/$FILE $INSTALL/etc/systemd/system
+    ALIASES=`grep "^Alias=" $PKG_DIR/systemd.d/$FILE`
+    if [ -n "$ALIASES" ]; then
+      ALIASES=`echo $ALIASES | sed s/^Alias\=//g`
+      for ALIAS in $ALIASES; do
+        POS=`expr index "$ALIAS" /`
+        if [ "$POS" -gt 0 ]; then
+          DIR=`echo $ALIAS | cut -d "/" -f1`
+          mkdir -p $INSTALL/etc/systemd/system/$DIR
+          ln -s $INSTALL/etc/systemd/system/$ALIAS ../$FILE
+        else
+          ln -s $INSTALL/etc/systemd/system/$ALIAS $FILE
+        fi
+      done
+    fi  
+    WANTEDBY=`grep "^WantedBy=" $PKG_DIR/systemd.d/$FILE`
+    if [ -n "$WANTEDBY" ]; then
+      WANTEDBY=`echo $WANTEDBY | sed s/^WantedBy\=//g`
+      mkdir -p $INSTALL/etc/systemd/system/$WANTEDBY
+      ln -s $INSTALL/etc/systemd/system/$WANTEDBY/$FILE ../$FILE
+    fi
+  done
+fi
+
 $SCRIPTS/build $@
 
 printf  "%${INDENT}c INSTALL  $1\n" >&$SILENT_OUT
