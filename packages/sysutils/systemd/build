@@ -1,0 +1,25 @@
+#!/bin/sh
+
+. config/options $1
+
+cd $PKG_BUILD
+
+#$AUTORECONF
+./configure --host=$TARGET_NAME \
+            --build=$HOST_NAME \
+            --prefix=/usr \
+            --sysconfdir=/etc \
+            --libexecdir=/lib/systemd \
+            --localstatedir=/var \
+            --disable-static \
+            --enable-shared \
+            --disable-selinux \
+            --disable-pam \
+            --disable-gtk \
+            --with-distro=other \
+            --with-sysvinit-path="" \
+            --with-sysvrcd-path="" \
+            --with-syslog-service=syslog.service \
+            --with-rootdir="" \
+
+make
