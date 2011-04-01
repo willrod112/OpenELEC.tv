@@ -1,0 +1,38 @@
+From 2f47066f6ef233b8044bb53900067f5a7e9ef98c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Andreas=20=C3=96man?= <andreas@lonelycoder.com>
+Date: Fri, 1 Apr 2011 15:32:07 +0200
+Subject: [PATCH] Correctly deal with return value from write()
+
+---
+ src/tcp.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/tcp.c b/src/tcp.c
+index 171a4dc..27ed560 100644
+--- a/src/tcp.c
++++ b/src/tcp.c
+@@ -181,18 +181,18 @@ int
+ tcp_write_queue(int fd, htsbuf_queue_t *q)
+ {
+   htsbuf_data_t *hd;
+-  int l, r;
++  int l, r = 0;
+ 
+   while((hd = TAILQ_FIRST(&q->hq_q)) != NULL) {
+     TAILQ_REMOVE(&q->hq_q, hd, hd_link);
+ 
+     l = hd->hd_data_len - hd->hd_data_off;
+-    r = write(fd, hd->hd_data + hd->hd_data_off, l);
++    r |= !!write(fd, hd->hd_data + hd->hd_data_off, l);
+     free(hd->hd_data);
+     free(hd);
+   }
+   q->hq_size = 0;
+-  return 0;
++  return r;
+ }
+ 
+ 
+-- 
+1.7.4.1
+
