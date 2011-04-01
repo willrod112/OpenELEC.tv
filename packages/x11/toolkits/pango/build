@@ -22,6 +22,9 @@
 
 . config/options $1
 
+# pango fails to build with LTO support with gcc-4.6.0
+  strip_lto
+
 # pango fails to build with linker plugin (segfault)
   strip_linker_plugin
 
