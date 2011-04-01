@@ -33,6 +33,7 @@ cd $PKG_BUILD
             --enable-shared \
             --disable-device-mapper \
             --without-readline \
+            --disable-Werror \
 
 make
 
