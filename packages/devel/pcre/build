@@ -22,8 +22,10 @@
 
 . config/options $1
 
-cd $PKG_BUILD
+# fails to build with gcc-4.6.0
+  strip_lto
 
+cd $PKG_BUILD
 mkdir -p m4 && do_autoreconf
 ./configure --host=$TARGET_NAME \
             --build=$HOST_NAME \
