@@ -22,6 +22,9 @@
 
 . config/options $1
 
+# busybox fails building with LTO support with gcc-4.6.0
+  strip_lto
+
 $SCRIPTS/unpack busybox
 
 if [ -f $PROJECT_DIR/$PROJECT/busybox/$1.conf ]; then
