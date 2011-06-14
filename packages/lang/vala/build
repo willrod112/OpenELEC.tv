@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. config/options $1
+
+setup_toolchain host
+
+cd $PKG_BUILD
+
+./configure --prefix=$ROOT/$TOOLCHAIN
+
+make
+make install

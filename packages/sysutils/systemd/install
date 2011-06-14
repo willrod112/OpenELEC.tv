@@ -1,0 +1,37 @@
+#!/bin/sh
+
+. config/options $1
+
+mkdir -p $INSTALL/usr/bin
+mkdir -p $INSTALL/lib/systemd
+ cp $PKG_BUILD/systemd-cgls $INSTALL/usr/bin
+ cp $PKG_BUILD/systemd-cgroups-agent $INSTALL/lib/systemd
+ cp $PKG_BUILD/systemd-logger $INSTALL/lib/systemd
+ cp $PKG_BUILD/systemd-shutdownd $INSTALL/lib/systemd
+ cp $PKG_BUILD/systemd-modules-load $INSTALL/lib/systemd
+ cp $PKG_BUILD/systemd-kmsg-syslogd $INSTALL/lib/systemd
+ cp $PKG_BUILD/systemd-tmpfiles $INSTALL/lib/systemd
+
+mkdir -p $INSTALL/usr/share/dbus-1/interfaces
+ cp $PKG_BUILD/org.freedesktop.systemd1.*.xml $INSTALL/usr/share/dbus-1/interfaces
+
+mkdir -p $INSTALL/etc/dbus-1/system.d
+ cp $PKG_BUILD/src/org.freedesktop.systemd1.conf $INSTALL/etc/dbus-1/system.d
+
+mkdir -p $INSTALL/usr/share/dbus-1/system-services
+ cp $PKG_BUILD/src/org.freedesktop.systemd1.service $INSTALL/usr/share/dbus-1/system-services
+ cp $PKG_BUILD/src/org.freedesktop.systemd1.service $INSTALL/usr/share/dbus-1/services/org.freedesktop.systemd1.service
+
+mkdir -p $INSTALL/etc/systemd
+ cp $PKG_DIR/config/system.conf $INSTALL/etc/systemd
+
+mkdir -p $INSTALL/usr/share/polkit-1/actions
+ cp $PKG_BUILD/src/org.freedesktop.systemd1.policy $INSTALL/usr/share/polkit-1/actions
+
+mkdir -p $INSTALL/lib/udev/rules.d
+ cp $PKG_BUILD/src/99-systemd.rules $INSTALL/lib/udev/rules.d
+
+mkdir -p $INSTALL/bin
+ cp $PKG_BUILD/systemctl $INSTALL/bin
+ cp $PKG_BUILD/systemd $INSTALL/bin
+ cp $PKG_BUILD/systemd-notify $INSTALL/bin
